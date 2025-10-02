@@ -59,30 +59,46 @@ export const crewService = {
   /**
  * Get all crew members with pagination
    */
-  async getCrews(page: number = 1, limit: number = 10): Promise<ApiResponse<CrewApiResponse>> {
+  async getCrews(page: number = 1, limit: number = 10): Promise<ApiResponse<Crew[]>> {
     const response = await api.get<any>(`${API_CONFIG.VERSION}/crews?page=${page}&limit=${limit}`);
     
     // Handle different response structures
     if (response.success && response.data) {
       // If data is already an array, return it directly
       if (Array.isArray(response.data)) {
-        return response;
-      }
-      // If data has a crews property, extract it
-      else if (response.data.crews && Array.isArray(response.data.crews)) {
         return {
           ...response,
-          data: response.data.crews
+          data: response.data
+        };
+      }
+      // If data has a crews property with nested data array
+      else if (response.data.crews && Array.isArray(response.data.crews.data)) {
+        return {
+          ...response,
+          data: response.data.crews.data
+        };
+      }
+      // If data has a data property that's an array
+      else if (response.data.data && Array.isArray(response.data.data)) {
+        return {
+          ...response,
+          data: response.data.data
         };
       }
       // If data is an object with other structure, try to find the array
       else {
         console.warn('Unexpected API response structure:', response.data);
-        return response;
+        return {
+          ...response,
+          data: []
+        };
       }
     }
     
-    return response;
+    return {
+      ...response,
+      data: []
+    };
   },
 
   /**

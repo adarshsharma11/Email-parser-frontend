@@ -8,10 +8,10 @@ import { useApi } from "../../hooks";
 
 export default function Crews() {
   // Use the custom API hook for crews
-  const { data: response, loading, error, execute: fetchCrews } = useApi(() => crewService.getCrews(1, 10));
-
-  // Extract crews from the API response - response contains the API response with data array
-  const crews = response?.data || [];
+  const { data: crews, loading, error, execute: fetchCrews } = useApi(() => crewService.getCrews(1, 10));
+  
+  // Handle null data by converting to undefined
+  const crewsData = crews || undefined;
 
   // Fetch crew data on component mount
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Crews() {
         console.log('✅ Data type:', typeof result.data);
         console.log('✅ Is array:', Array.isArray(result.data));
         console.log('✅ Data length:', Array.isArray(result.data) ? result.data.length : 'N/A');
-        console.log('✅ First crew item:', result.data[0]);
+        console.log('✅ First crew item:', Array.isArray(result.data) ? result.data[0] : 'N/A');
       } else {
         console.log('❌ FAILED: No data received or request failed');
         console.log('❌ Result:', result);
@@ -68,7 +68,7 @@ export default function Crews() {
           )}
         
           
-          <CrewTable crews={crews} loading={loading} />
+          <CrewTable crews={crewsData} loading={loading} />
         </ComponentCard>
       </div>
     </>
