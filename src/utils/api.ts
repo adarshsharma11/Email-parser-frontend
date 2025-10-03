@@ -22,21 +22,20 @@ export interface ApiError {
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
-  baseURL: API_CONFIG.URL, // Use just /api without version, version is added by endpoints
+  baseURL: API_CONFIG.URL,
   timeout: 30000, // 30 seconds
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Access-Control-Allow-Origin': '*',
   },
   // CORS configuration
-  withCredentials: true, // Include credentials in requests
+ // withCredentials: true, // Include credentials in requests
 });
 
 // Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    console.log('API Request:', config.method?.toUpperCase(), config.url);
-    console.log('API Base URL:', config.baseURL);
-    
     // Add auth token if available
     if (API_CONFIG.KEY) {
       config.headers.Authorization = `Bearer ${API_CONFIG.KEY}`;
@@ -53,7 +52,6 @@ apiClient.interceptors.request.use(
 // Response interceptor
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log('API Response:', response.config.method?.toUpperCase(), response.config.url, 'Status:', response.status);
     return response;
   },
   (error: AxiosError<ApiError>) => {
