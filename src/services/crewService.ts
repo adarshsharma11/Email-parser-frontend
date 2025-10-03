@@ -43,12 +43,7 @@ export interface CrewStats {
 }
 
 export interface CrewApiResponse {
-  crews: {
   data: Crew[];
-  total: number;
-  page: number;
-  limit: number;
-  };
   total: number;
   page: number;
   limit: number;

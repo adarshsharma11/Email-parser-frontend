@@ -3,7 +3,6 @@ import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
 import PageMeta from "../../components/common/PageMeta";
 import CrewTable from "../../components/tables/CrewTable";
-import ApiTest from "../../components/common/ApiTest";
 import { crewService } from "../../services";
 import { useApi } from "../../hooks";
 
@@ -12,7 +11,7 @@ export default function Crews() {
   const { data: response, loading, error, execute: fetchCrews } = useApi(() => crewService.getCrews(1, 10));
 
   // Extract crews from the API response - response contains the crews data directly
-  const crews = response?.crews?.data || [];
+  const crews = response?.data || [];
 
   // Fetch crew data on component mount
   useEffect(() => {
