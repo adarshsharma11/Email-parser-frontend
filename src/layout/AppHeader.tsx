@@ -5,11 +5,21 @@ import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
+import { bookingService } from "../services";
+import { useApi } from "../hooks";
+import { useAppContext } from "../context/AppContext";
 
 const AppHeader: React.FC = () => {
+  const { platform, setPlatform, hotelId, setHotelId } = useAppContext();
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+  const [hotels, setHotels] = useState<{ id: string; name: string }[]>([]);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
+  const { data: response , execute : fetchProperty } = useApi(() =>
+    bookingService.propertyBooking(platform)
+  );
+
+  type Platform = "airbnb" | "vrbo" | "booking" | "plumguide";
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {
@@ -24,6 +34,28 @@ const AppHeader: React.FC = () => {
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // 🔹 Fetch hotels when platform changes
+    useEffect(() => {
+      if (platform) {
+        fetchProperty(platform);
+      } else {
+        setHotels([]);
+      }
+    }, [platform]);
+
+    // 🔹 When API response changes, update hotels list
+    useEffect(() => {
+      if (response?.data) {
+        const mappedHotels = Object.entries(response.data).map(([id, name]) => ({
+          id,
+          name: String(name),
+        }));
+        setHotels(mappedHotels);
+      } else {
+        setHotels([]);
+      }
+    }, [response]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -150,6 +182,39 @@ const AppHeader: React.FC = () => {
               </div>
             </form>
           </div>
+          <div className="flex items-center gap-3">
+            <select
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value as Platform)}
+              className="h-10 border border-gray-300 rounded-lg px-2 text-sm dark:bg-gray-800 dark:text-white"
+            >
+              <option value="">Select Platform</option>
+              <option value="airbnb">Airbnb</option>
+              <option value="booking">Booking</option>
+              <option value="plumguide">Plumguide</option>
+              <option value="vrbo">Vrbo</option>
+            </select>
+
+            <select
+              value={hotelId}
+              onChange={(e) => setHotelId(e.target.value)}
+              className="h-10 border border-gray-300 rounded-lg px-2 text-sm dark:bg-gray-800 dark:text-white"
+              disabled={!platform || hotels.length === 0}
+            >
+              <option value="">
+                {platform
+                  ? hotels.length > 0
+                    ? "Select Hotel"
+                    : "No Hotels Found"
+                  : "Select Platform First"}
+              </option>
+              {hotels.map((hotel) => (
+                <option key={hotel.id} value={hotel.id}>
+                  {hotel.name}
+                </option>
+              ))}
+            </select>
+        </div>
         </div>
         <div
           className={`${
