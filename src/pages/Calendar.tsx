@@ -9,6 +9,7 @@ import { useModal } from "../hooks/useModal";
 import PageMeta from "../components/common/PageMeta";
 import { bookingService, Booking } from "../services/bookingService";
 import { useApi } from "../hooks/useApi";
+import { useAppContext } from "../context/AppContext";
 
 interface CalendarEvent extends EventInput {
   extendedProps: {
@@ -19,6 +20,8 @@ interface CalendarEvent extends EventInput {
 }
 
 const Calendar: React.FC = () => {
+  const { platform } = useAppContext();
+  
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null
   );
@@ -29,7 +32,7 @@ const Calendar: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const calendarRef = useRef<FullCalendar>(null);
   const { isOpen, openModal, closeModal } = useModal();
-  const { data: response, loading, error, execute: fetchBookings } = useApi(() => bookingService.getBookings(1, 10));
+  const { data: response, loading, error, execute: fetchBookings } = useApi(() => bookingService.getBookings(1, 10 ,platform));
 
   // Extract bookings from the API response
   const bookings = response?.data?.bookings || [];
