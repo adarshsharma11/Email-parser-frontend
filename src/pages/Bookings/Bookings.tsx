@@ -5,58 +5,46 @@ import PageMeta from "../../components/common/PageMeta";
 import BookingTable from "../../components/tables/BookingTable";
 import { bookingService } from "../../services";
 import { useApi } from "../../hooks";
+import { useAppContext } from "../../context/AppContext";
 
 export default function Bookings() {
-  // Use the custom API hook for bookings
-  const { data: response, loading, error, execute: fetchBookings } = useApi(() => bookingService.getBookings(1, 10));
+  const { platform } = useAppContext();
 
-  // Extract bookings from the API response
+  // Custom API hook
+  const { data: response, loading, error, execute: fetchBookings } = useApi(() =>
+    bookingService.getBookings(1, 10, platform)
+  );
+
   const bookings = response?.data?.bookings || [];
 
-  // Fetch bookings on component mount
   useEffect(() => {
-    fetchBookings();
-  }, []);
+    if (platform) {
+      fetchBookings();
+    }
+  }, [platform]); // 👈 dependency added
 
-  // Log the booking data when it changes
   useEffect(() => {
-    if (bookings && bookings.length > 0) {
-      console.log('📊 Bookings Data:', bookings);
-      console.log('📈 Total Bookings:', bookings.length);
-      console.log('🎯 First Booking Sample:', bookings[0]);
-      console.log('📋 Response Structure:', response);
+    if (bookings?.length) {
+      console.log("📊 Bookings Data:", bookings);
     }
-  }, [bookings, response]);
-
-  // Log loading and error states
-  useEffect(() => {
-    if (loading) {
-      console.log('⏳ Loading bookings...');
-    }
-    if (error) {
-      console.error('❌ Error loading bookings:', error);
-      console.error('📍 Error Details:', error.message);
-    }
-  }, [loading, error]);
+  }, [bookings]);
 
   return (
     <>
       <PageMeta
-        title="React.js Bookings Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Bookings Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="Bookings Dashboard"
+        description="React.js Bookings Dashboard Page"
       />
       <PageBreadcrumb pageTitle="Bookings" />
       <div className="space-y-6">
-        <ComponentCard title="Bookings Data">
+        <ComponentCard title={`Bookings (${platform})`}>
           {error && (
             <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <div className="text-red-600 font-medium">Error loading bookings: {error.message}</div>
-              <div className="text-red-500 text-sm mt-1">
-                Please check the API connection and CORS settings
+              <div className="text-red-600 font-medium">
+                Error loading bookings: {error.message}
               </div>
             </div>
           )}
-          
           <BookingTable bookings={bookings} loading={loading} />
         </ComponentCard>
       </div>

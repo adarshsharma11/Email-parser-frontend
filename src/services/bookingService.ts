@@ -80,11 +80,17 @@ export interface BookingApiResponse {
   };
 }
 
+export interface ReservationMapResponse {
+  success: boolean;
+  message: string;
+  data: Record<string, string>; 
+}
+
 // Booking Service
 export const bookingService = {
   // Get all bookings with pagination
-  getBookings: async (page = 1, limit = 10): Promise<ApiResponse<BookingApiResponse>> => {
-    const endpoint = ENDPOINT_PATTERNS.WITH_PAGINATION(BOOKING_ENDPOINTS.LIST, page, limit);
+  getBookings: async (page = 1, limit = 10, platform : string): Promise<ApiResponse<BookingApiResponse>> => {
+    const endpoint = ENDPOINT_PATTERNS.WITH_PAGINATION(BOOKING_ENDPOINTS.LIST, page, limit ,platform);
     return api.get<BookingApiResponse>(endpoint);
   },
 
@@ -109,9 +115,9 @@ export const bookingService = {
   },
 
   // Get bookings by status
-  getBookingsByStatus: async (status: string, page = 1, limit = 10): Promise<ApiResponse<Booking[]>> => {
+  getBookingsByStatus: async (status: string, page = 1, limit = 10 , platform :string): Promise<ApiResponse<Booking[]>> => {
     const endpoint = BOOKING_ENDPOINTS.BY_STATUS(status);
-    const paginatedEndpoint = ENDPOINT_PATTERNS.WITH_PAGINATION(endpoint, page, limit);
+    const paginatedEndpoint = ENDPOINT_PATTERNS.WITH_PAGINATION(endpoint, page, limit,platform);
     return api.get<Booking[]>(paginatedEndpoint);
   },
 
@@ -121,9 +127,9 @@ export const bookingService = {
   },
 
   // Search bookings
-  searchBookings: async (query: string, page = 1, limit = 10): Promise<ApiResponse<Booking[]>> => {
-    const endpoint = ENDPOINT_PATTERNS.WITH_SEARCH(BOOKING_ENDPOINTS.SEARCH, query);
-    const paginatedEndpoint = ENDPOINT_PATTERNS.WITH_PAGINATION(endpoint, page, limit);
+  searchBookings: async (query: string, page = 1, limit = 10 , platform :string): Promise<ApiResponse<Booking[]>> => {
+    const endpoint = ENDPOINT_PATTERNS.WITH_SEARCH(BOOKING_ENDPOINTS.SEARCH, query ,platform);
+    const paginatedEndpoint = ENDPOINT_PATTERNS.WITH_PAGINATION(endpoint, page, limit,platform);
     return api.get<Booking[]>(paginatedEndpoint);
   },
 
@@ -147,6 +153,11 @@ export const bookingService = {
   // Cancel booking
   cancelBooking: async (id: string, reason?: string): Promise<ApiResponse<Booking>> => {
     return api.patch<Booking>(`${BOOKING_ENDPOINTS.DETAIL(id)}/cancel`, { reason });
+  },
+
+   // Property
+  propertyBooking: async (platform: string): Promise<ApiResponse<ReservationMapResponse>> => {
+        return api.get<ReservationMapResponse>(BOOKING_ENDPOINTS.PROPERTY(platform));
   },
 };
 

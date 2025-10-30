@@ -9,19 +9,16 @@ import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
 import Bookings from "./pages/Bookings/Bookings";
 import Crews from "./pages/Crews/Crews";
-
-
-
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 
-export default function App() {
-  // Initialize API configuration on app start
+import { AppProvider } from "./context/AppContext";
 
+export default function App() {
   return (
-    <>
+    <AppProvider>
       <Router>
         <ScrollToTop />
         <Routes>
@@ -55,6 +52,6 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
-    </>
+    </AppProvider>
   );
 }

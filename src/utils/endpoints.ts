@@ -11,7 +11,7 @@ const buildEndpoint = (path: string): string => `${API_CONFIG.VERSION}${path}`;
 // Booking Endpoints
 export const BOOKING_ENDPOINTS = {
   // Base booking endpoints
-  LIST: buildEndpoint('/bookings'),
+  LIST:buildEndpoint(`/bookings`),
   DETAIL: (id: string) => buildEndpoint(`/bookings/${id}`),
   CREATE: buildEndpoint('/bookings'),
   UPDATE: (id: string) => buildEndpoint(`/bookings/${id}`),
@@ -23,6 +23,8 @@ export const BOOKING_ENDPOINTS = {
   SEARCH: buildEndpoint('/bookings/search'),
   STATS: buildEndpoint('/bookings/stats'),
   EXPORT: buildEndpoint('/bookings/export'),
+  PROPERTY:(platform: string) => buildEndpoint(`/bookings/propertyData/${platform}`),
+
 } as const;
 
 // User Endpoints
@@ -54,18 +56,18 @@ export const AUTH_ENDPOINTS = {
 // Common endpoint patterns
 export const ENDPOINT_PATTERNS = {
   // Pagination
-  WITH_PAGINATION: (endpoint: string, page: number, limit: number) => 
-    `${endpoint}?page=${page}&limit=${limit}`,
+  WITH_PAGINATION: (endpoint: string, page: number, limit: number ,platform: string) => 
+    `${endpoint}?page=${page}&limit=${limit}&platform=${platform}`,
   
   // Search
-  WITH_SEARCH: (endpoint: string, query: string) => 
-    `${endpoint}?q=${encodeURIComponent(query)}`,
+  WITH_SEARCH: (endpoint: string, query: string,platform: string) => 
+    `${endpoint}?q=${encodeURIComponent(query)}&platform=${platform}`,
   
   // Date range
-  WITH_DATE_RANGE: (endpoint: string, startDate: string, endDate: string) => 
-    `${endpoint}?start=${startDate}&end=${endDate}`,
+  WITH_DATE_RANGE: (endpoint: string, startDate: string, endDate: string,platform: string) => 
+    `${endpoint}?start=${startDate}&end=${endDate}&platform=${platform}`,
   
   // Status filtering
-  WITH_STATUS: (endpoint: string, status: string) => 
-    `${endpoint}?status=${status}`,
+  WITH_STATUS: (endpoint: string, status: string,platform: string) => 
+    `${endpoint}?status=${status}&platform=${platform}`,
 } as const;
