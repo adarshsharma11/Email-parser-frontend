@@ -58,41 +58,16 @@ const Calendar: React.FC = () => {
     return platformColors[booking.platform.toLowerCase()] || platformColors['default'];
   };
 
-  useEffect(() => {
-    // Fetch bookings when component mounts
-    console.log('Calendar component mounted, fetching bookings...');
-    fetchBookings();
-  }, []);
-
-  // Log the booking data when it changes
-  useEffect(() => {
-    if (bookings && bookings.length > 0) {
-      console.log('📊 Calendar Bookings Data:', bookings);
-      console.log('📈 Total Calendar Bookings:', bookings.length);
-      console.log('🎯 First Calendar Booking Sample:', bookings[0]);
-      console.log('📋 Calendar Response Structure:', response);
+   useEffect(() => {
+    if (platform) {
+      fetchBookings();
     }
-  }, [bookings, response]);
-
-  // Log loading and error states
-  useEffect(() => {
-    if (loading) {
-      console.log('⏳ Loading calendar bookings...');
-    }
-    if (error) {
-      console.error('❌ Error loading calendar bookings:', error);
-      console.error('📍 Error Details:', error.message);
-    }
-  }, [loading, error]);
+  }, [platform]);
 
   useEffect(() => {
     // Convert bookings to calendar events when bookings data changes
-    if (bookings && bookings.length > 0) {
-      console.log('🔄 Converting bookings to calendar events...');
-      console.log('📅 Number of bookings to convert:', bookings.length);
-      
+    if (bookings && bookings.length > 0) {     
       const bookingEvents: CalendarEvent[] = bookings.map((booking: Booking) => {
-        console.log('📝 Processing booking:', booking.reservation_id, booking.platform, booking.guest_name);
         const event = {
           id: booking.reservation_id,
           title: `${booking.guest_name} - ${booking.property_name}`,
@@ -111,12 +86,9 @@ const Calendar: React.FC = () => {
         console.log('🎯 Created event:', event);
         return event;
       });
-      
-      console.log('✅ Total events created:', bookingEvents.length);
-      console.log('📊 Events array:', bookingEvents);
+
       setEvents(bookingEvents);
     } else {
-      console.log('ℹ️ No bookings found or bookings array is empty');
       setEvents([]);
     }
   }, [bookings]);

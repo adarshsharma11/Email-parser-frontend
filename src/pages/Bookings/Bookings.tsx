@@ -21,13 +21,7 @@ export default function Bookings() {
     if (platform) {
       fetchBookings();
     }
-  }, [platform]); // 👈 dependency added
-
-  useEffect(() => {
-    if (bookings?.length) {
-      console.log("📊 Bookings Data:", bookings);
-    }
-  }, [bookings]);
+  }, [platform]);
 
   return (
     <>
