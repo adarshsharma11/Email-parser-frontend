@@ -25,6 +25,12 @@
       "dest": "/v1"
     }
   ],
+  "rewrites": [
+        {
+          "source": "/(.*)",
+          "destination": "/index.html"
+        }
+  ],
   "env": {
     "VITE_API_URL": "https://email-parser-five.vercel.app"
   }
