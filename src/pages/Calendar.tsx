@@ -37,12 +37,12 @@ const Calendar: React.FC = () => {
   // Extract bookings from the API response
   const bookings = response?.data?.bookings || [];
 
-  const calendarsEvents = {
-    Danger: "danger",
-    Success: "success",
-    Primary: "primary",
-    Warning: "warning",
-  };
+  // const calendarsEvents = {
+  //   Danger: "danger",
+  //   Success: "success",
+  //   Primary: "primary",
+  //   Warning: "warning",
+  // };
 
   // Helper function to get booking color based on platform
   const getBookingColor = (booking: Booking): string => {
@@ -126,13 +126,18 @@ const Calendar: React.FC = () => {
     setSelectedEvent(calendarEvent);
     
     // If it's a booking event, pre-fill with booking details
-    if (calendarEvent.extendedProps.isBooking && calendarEvent.extendedProps.booking) {
-      const booking = calendarEvent.extendedProps.booking;
-      setEventTitle(`${booking.guest_name} - ${booking.property_name}`);
-      setEventStartDate(booking.check_in_date);
-      setEventEndDate(booking.check_out_date);
-      setEventLevel('Booking');
-    } else {
+   if (calendarEvent.extendedProps.isBooking && calendarEvent.extendedProps.booking) {
+    const booking = calendarEvent.extendedProps.booking;
+    setEventTitle(`${booking.guest_name} - ${booking.property_name}`);
+    
+    // Convert ISO date → YYYY-MM-DD
+    const checkInDate = booking.check_in_date ? booking.check_in_date.split("T")[0] : "";
+    const checkOutDate = booking.check_out_date ? booking.check_out_date.split("T")[0] : "";
+
+    setEventStartDate(checkInDate);
+    setEventEndDate(checkOutDate);
+    setEventLevel('Booking');
+  }else {
       // Regular event handling
       setEventTitle(event.title);
       setEventStartDate(event.start?.toISOString().split("T")[0] || "");
@@ -308,7 +313,7 @@ const Calendar: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="mt-6">
+              {/* <div className="mt-6">
                 <label className="block mb-4 text-sm font-medium text-gray-700 dark:text-gray-400">
                   Event Color
                 </label>
@@ -346,7 +351,7 @@ const Calendar: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               <div className="mt-6">
                 <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">

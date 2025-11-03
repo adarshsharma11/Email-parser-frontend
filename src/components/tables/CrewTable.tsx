@@ -170,7 +170,7 @@ export default function CrewTable({ crews, loading = false }: CrewTableProps) {
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">{crew.name}</div>
-                      <div className="text-sm text-gray-500">ID: {crew.id.slice(0, 8)}...</div>
+                      <div className="text-sm text-gray-500">ID: {crew.id}...</div>
                     </div>
                   </div>
                 </td>
