@@ -16,10 +16,13 @@ interface CalendarEvent extends EventInput {
     calendar: string;
     booking?: Booking;
     isBooking?: boolean;
+    isCheckout?:boolean
   };
 }
 
 const Calendar: React.FC = () => {
+  const [isCrewModalOpen, setIsCrewModalOpen] = useState(false);
+  const [selectedBookingForCrew, setSelectedBookingForCrew] = useState<Booking | null>(null);
   const { platform } = useAppContext();
   
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
@@ -65,26 +68,56 @@ const Calendar: React.FC = () => {
   }, [platform]);
 
   useEffect(() => {
-    // Convert bookings to calendar events when bookings data changes
-    if (bookings && bookings.length > 0) {     
-      const bookingEvents: CalendarEvent[] = bookings.map((booking: Booking) => {
-        const event = {
-          id: booking.reservation_id,
-          title: `${booking.guest_name} - ${booking.property_name}`,
-          start: booking.check_in_date,
-          end: booking.check_out_date,
+    if (bookings && bookings.length > 0) {
+      const bookingEvents: CalendarEvent[] = [];
+
+      bookings.forEach((booking: Booking) => {
+        // Parse check-in and check-out dates as local dates (ignore time)
+        const parseLocalDate = (isoStr: string) => new Date(isoStr.split("T")[0]);
+
+        const checkIn = parseLocalDate(booking.check_in_date);
+        const checkOut = parseLocalDate(booking.check_out_date);
+
+        // Add booking chips for all nights except checkout
+        let current = new Date(checkIn);
+        while (current < checkOut) {
+          bookingEvents.push({
+            id: `${booking.reservation_id}-booking-${current.toISOString().split("T")[0]}`,
+            title: `${booking.guest_name} - ${booking.property_name}`,
+            start: current.toISOString().split("T")[0],
+            end: current.toISOString().split("T")[0],
+            allDay: true,
+            backgroundColor: getBookingColor(booking),
+            borderColor: getBookingColor(booking),
+            textColor: "#ffffff",
+            extendedProps: {
+              calendar: "Booking",
+              booking: booking,
+              isBooking: true,
+              isCheckout: false, // mark as booking
+            },
+          });
+
+          current.setDate(current.getDate() + 1);
+        }
+
+        // Add checkout chip on the last day
+        bookingEvents.push({
+          id: `${booking.reservation_id}-checkout`,
+          title: "Checkout",
+          start: checkOut.toISOString().split("T")[0],
+          end: checkOut.toISOString().split("T")[0],
           allDay: true,
-          backgroundColor: getBookingColor(booking),
-          borderColor: getBookingColor(booking),
-          textColor: '#ffffff',
+          backgroundColor: "#e6f63bff", // blue checkout chip
+          borderColor: "#080807ff",
+          textColor: "#ffffff",
           extendedProps: {
-            calendar: 'Booking',
+            calendar: "Checkout",
             booking: booking,
             isBooking: true,
+            isCheckout: true, // mark as checkout
           },
-        };
-        console.log('🎯 Created event:', event);
-        return event;
+        });
       });
 
       setEvents(bookingEvents);
@@ -120,32 +153,32 @@ const Calendar: React.FC = () => {
     openModal();
   };
 
-  const handleEventClick = (clickInfo: EventClickArg) => {
-    const event = clickInfo.event;
-    const calendarEvent = event as unknown as CalendarEvent;
-    setSelectedEvent(calendarEvent);
-    
-    // If it's a booking event, pre-fill with booking details
-   if (calendarEvent.extendedProps.isBooking && calendarEvent.extendedProps.booking) {
+const handleEventClick = (clickInfo: EventClickArg) => {
+  const event = clickInfo.event;
+  const calendarEvent = event as unknown as CalendarEvent;
+  setSelectedEvent(calendarEvent);
+
+  if (calendarEvent.extendedProps?.isCheckout) {
+    // Open separate modal for checkout
+    setSelectedBookingForCrew(calendarEvent?.extendedProps?.booking ?? null);
+    setIsCrewModalOpen(true);
+  } else if (calendarEvent.extendedProps.isBooking && calendarEvent.extendedProps.booking) {
+    // Existing booking modal logic
     const booking = calendarEvent.extendedProps.booking;
     setEventTitle(`${booking.guest_name} - ${booking.property_name}`);
-    
-    // Convert ISO date → YYYY-MM-DD
-    const checkInDate = booking.check_in_date ? booking.check_in_date.split("T")[0] : "";
-    const checkOutDate = booking.check_out_date ? booking.check_out_date.split("T")[0] : "";
-
-    setEventStartDate(checkInDate);
-    setEventEndDate(checkOutDate);
-    setEventLevel('Booking');
-  }else {
-      // Regular event handling
-      setEventTitle(event.title);
-      setEventStartDate(event.start?.toISOString().split("T")[0] || "");
-      setEventEndDate(event.end?.toISOString().split("T")[0] || "");
-      setEventLevel(event.extendedProps.calendar);
-    }
+    setEventStartDate(booking.check_in_date.split("T")[0]);
+    setEventEndDate(booking.check_out_date.split("T")[0]);
+    setEventLevel("Booking");
     openModal();
-  };
+  } else {
+    // Regular event
+    setEventTitle(event.title);
+    setEventStartDate(event.start?.toISOString().split("T")[0] || "");
+    setEventEndDate(event.end?.toISOString().split("T")[0] || "");
+    setEventLevel(event.extendedProps.calendar);
+    openModal();
+  }
+};
 
   const handleAddOrUpdateEvent = () => {
     if (selectedEvent) {
@@ -405,14 +438,99 @@ const Calendar: React.FC = () => {
             </div>
           </div>
         </Modal>
+        {/* 🆕 Crew and Task Details Modal */}
+        <Modal
+          isOpen={isCrewModalOpen}
+          onClose={() => setIsCrewModalOpen(false)}
+          className="max-w-[700px] p-6 lg:p-10"
+        >
+          {selectedBookingForCrew && (
+            <div className="flex flex-col px-2 overflow-y-auto custom-scrollbar">
+              <h5 className="mb-3 font-semibold text-gray-800 text-xl dark:text-white/90">
+                Crew & Task Details
+              </h5>
+              {/* Crew Details */}
+              {selectedBookingForCrew.tasks && selectedBookingForCrew.tasks.length > 0 ? (
+                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <h6 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">Assigned Crew</h6>
+                  {selectedBookingForCrew.tasks
+                    .map(task => task?.crews)        
+                    .filter(Boolean)  
+                    .map((crews: any, i: number) => (
+                      <div key={i} className="text-sm text-gray-700 dark:text-gray-200 mb-2">
+                        👷‍♂️ <span className="font-medium">{crews.name}</span>
+                        {crews.phone && <span> — {crews.phone}</span>}
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="mb-6 text-sm text-gray-500 dark:text-gray-400 italic">No crew assigned</div>
+              )}
+
+              {/* Task Details */}
+              {selectedBookingForCrew.tasks && selectedBookingForCrew.tasks.length > 0 ? (
+                <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                  <h6 className="font-semibold text-green-800 dark:text-green-300 mb-2">Cleaning Tasks</h6>
+                    {/* Property Name */}
+                    <div>
+                     <h4> Property: {selectedBookingForCrew.property_name}</h4> 
+                    </div>
+                  {selectedBookingForCrew.tasks.map((task: any, i: number) => (
+                    <div key={i} className="text-sm text-gray-700 dark:text-gray-200 mb-2">
+                      🧹 <span className="font-medium">{task.task_name || "Cleaning Task"}</span> — 
+                      <span className={`ml-1 px-2 py-0.5 rounded text-xs bg-gray-200 text-gray-800`}>
+                        {task.status || "pending"}
+                      </span>
+                      {task.scheduled_date && (
+                        <div className="text-xs text-gray-500">
+                          Scheduled: {task.scheduled_date.split("T")[0]}
+                        </div>
+                      )}
+                      {task.crew && (
+                        <div className="text-xs text-gray-500">
+                          Crew: {task.crew.name} {task.crew.phone && `— ${task.crew.phone}`}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500 dark:text-gray-400 italic">No cleaning tasks available</div>
+              )}
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setIsCrewModalOpen(false)}
+                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+        </Modal>
       </div>
     </>
   );
 };
 
 const renderEventContent = (eventInfo: any) => {
-  const isBooking = eventInfo.event.extendedProps.isBooking;
-  const booking = eventInfo.event.extendedProps.booking;
+  const { isBooking, isCheckout, booking } = eventInfo.event.extendedProps;
+
+  if (isCheckout && booking) {
+    // Show "Checkout - Guest Name"
+    return (
+      <div 
+        className="event-fc-color flex fc-event-main p-1 rounded-sm text-white"
+        style={{ backgroundColor: eventInfo.event.backgroundColor || '#e6f63b' }}
+      >
+        <div className="fc-daygrid-event-dot bg-white"></div>
+        <div className="fc-event-title text-xs font-medium truncate">
+          {booking.guest_name} - Checkout
+        </div>
+      </div>
+    );
+  }
   
   if (isBooking && booking) {
     return (

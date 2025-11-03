@@ -10,4 +10,3 @@ export { default as bookingService } from './bookingService';
 export type * from './bookingService';
 
 export { default as crewService } from './crewService';
-export type * from './crewService';
