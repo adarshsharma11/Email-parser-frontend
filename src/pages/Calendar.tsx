@@ -454,12 +454,12 @@ const handleEventClick = (clickInfo: EventClickArg) => {
                 <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                   <h6 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">Assigned Crew</h6>
                   {selectedBookingForCrew.tasks
-                    .map(task => task?.crew)        
+                    .map(task => task?.crews)        
                     .filter(Boolean)  
-                    .map((crew: any, i: number) => (
+                    .map((crews: any, i: number) => (
                       <div key={i} className="text-sm text-gray-700 dark:text-gray-200 mb-2">
-                        👷‍♂️ <span className="font-medium">{crew.name}</span>
-                        {crew.phone && <span> — {crew.phone}</span>}
+                        👷‍♂️ <span className="font-medium">{crews.name}</span>
+                        {crews.phone && <span> — {crews.phone}</span>}
                       </div>
                     ))}
                 </div>
