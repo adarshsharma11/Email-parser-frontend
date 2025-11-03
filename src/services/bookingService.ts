@@ -33,6 +33,27 @@ export interface Booking {
     check_out_date: string;
     reservation_id: string;
   };
+  tasks?: Task[];
+  crews?: Crew[];
+}
+export interface Crew {
+  id: number;
+  name: string;
+  phone?: string;
+  email?: string;
+  active?: boolean;
+  property_id?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Task {
+  task_id?: number;
+  task_name?: string;
+  status?: "completed" | "pending" | "in-progress";
+  scheduled_date?: string;
+  assigned_date?: string;
+  crews?: Crew;
 }
 
 export interface CreateBookingRequest {
