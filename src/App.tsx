@@ -10,6 +10,7 @@ import BasicTables from "./pages/Tables/BasicTables";
 import Bookings from "./pages/Bookings/Bookings";
 import Crews from "./pages/Crews/Crews";
 import AddCrew from "./pages/Crews/AddCrew";
+import { Properties, AddProperty } from "./pages/Properties";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
@@ -37,6 +38,8 @@ export default function App() {
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/crews" element={<Crews />} />
             <Route path="/crews/add" element={<AddCrew />} />
+            <Route path="/properties" element={<Properties />} />
+            <Route path="/properties/add" element={<AddProperty />} />
 
             {/* Ui Elements */}
            
