@@ -108,7 +108,7 @@ export default function Crews() {
           )}
         
           
-          <CrewTable crews={crews} loading={loading} onDelete={handleDeleteCrew} />
+          <CrewTable crews={crews} loading={loading} onDelete={handleDeleteCrew} deleteLoading={deleteLoading} />
         </ComponentCard>
       </div>
     </>

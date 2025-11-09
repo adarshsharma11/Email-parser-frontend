@@ -9,9 +9,10 @@ interface CrewTableProps {
   crews: Crew[] | undefined;
   loading?: boolean;
   onDelete?: (crewId: string) => void;
+  deleteLoading?: boolean;
 }
 
-export default function CrewTable({ crews, loading = false, onDelete }: CrewTableProps) {
+export default function CrewTable({ crews, loading = false, onDelete, deleteLoading = false }: CrewTableProps) {
   // Format date helper
   const formatDate = (dateString: string) => {
     if (!dateString) return 'N/A';
@@ -201,7 +202,7 @@ export default function CrewTable({ crews, loading = false, onDelete }: CrewTabl
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <button
                     onClick={() => onDelete?.(crew.id)}
-                    className="text-red-600 hover:text-red-900 hover:bg-red-50 px-2 py-1 rounded transition-colors duration-200"
+                    className={`text-red-600 hover:text-red-900 hover:bg-red-50 px-2 py-1 rounded transition-colors duration-200 ${deleteLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title="Delete crew member"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
