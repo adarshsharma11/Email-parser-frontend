@@ -34,7 +34,10 @@ const navItems: NavItem[] = [
    {
     icon: <TimeIcon />,
     name: "Crews",
-    path: "/crews",
+    subItems: [
+      { name: "View Crews", path: "/crews", pro: false },
+      { name: "Add Crew", path: "/crews/add", pro: false },
+    ],
   },
   {
     icon: <CalenderIcon />,
