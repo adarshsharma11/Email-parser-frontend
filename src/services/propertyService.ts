@@ -2,10 +2,12 @@
  * Property Service Module
  * Handles all property-related API operations
  */
-import { ApiResponse } from '../utils/api';
+import { api, ApiResponse } from '../utils/api';
+import { API_CONFIG } from '../utils/config';
 
 // Property interfaces
 export interface Property {
+  ical_feed_url:string
   id: string;
   created_at: string;
   name: string;
@@ -40,7 +42,7 @@ export interface PropertyStats {
 }
 
 export interface PropertyApiResponse {
-  data: Property[];
+  data: Property[];  // this is the array of properties
   total: number;
   page: number;
   limit: number;
@@ -56,47 +58,8 @@ const mockProperties: Property[] = [
     airbnb_id: 'AB67890',
     booking_id: 'BK11111',
     status: 'active',
+    ical_feed_url:'http://127.0.0.1:8000/api/v1/property/1.ics',
     updated_at: '2024-01-20T14:20:00Z'
-  },
-  {
-    id: '2',
-    created_at: '2024-01-16T09:15:00Z',
-    name: 'Mountain Retreat',
-    vrbo_id: 'VRBO67890',
-    airbnb_id: 'AB54321',
-    booking_id: 'BK22222',
-    status: 'active',
-    updated_at: '2024-01-18T16:45:00Z'
-  },
-  {
-    id: '3',
-    created_at: '2024-01-17T11:45:00Z',
-    name: 'Beach House Paradise',
-    vrbo_id: 'VRBO11111',
-    airbnb_id: 'AB99999',
-    booking_id: 'BK33333',
-    status: 'maintenance',
-    updated_at: '2024-01-19T12:30:00Z'
-  },
-  {
-    id: '4',
-    created_at: '2024-01-18T14:20:00Z',
-    name: 'City Center Apartment',
-    vrbo_id: 'VRBO44444',
-    airbnb_id: 'AB77777',
-    booking_id: 'BK44444',
-    status: 'inactive',
-    updated_at: '2024-01-21T09:15:00Z'
-  },
-  {
-    id: '5',
-    created_at: '2024-01-19T16:30:00Z',
-    name: 'Lakeside Cabin',
-    vrbo_id: 'VRBO55555',
-    airbnb_id: 'AB88888',
-    booking_id: 'BK55555',
-    status: 'active',
-    updated_at: '2024-01-22T10:45:00Z'
   }
 ];
 
@@ -106,14 +69,21 @@ export const propertyService = {
    * Get all properties with pagination
    */
   async getProperties(page: number = 1, limit: number = 10): Promise<ApiResponse<PropertyApiResponse>> {
+
+     const response = await api.get<any>(
+      `${API_CONFIG.VERSION}/property?page=${page}&limit=${limit}`
+    );
+     const dataArray = Array.isArray(response.data?.data)
+      ? response.data?.data
+      : [];
     // Mock implementation - replace with actual API call
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
           success: true,
           data: {
-            data: mockProperties,
-            total: mockProperties.length,
+            data: dataArray,
+            total: response.data.total,
             page,
             limit
           }
@@ -121,6 +91,7 @@ export const propertyService = {
       }, 500);
     });
   },
+
 
   /**
    * Get active properties
@@ -139,20 +110,21 @@ export const propertyService = {
    * Create new property
    */
   async createProperty(propertyData: CreatePropertyRequest): Promise<ApiResponse<Property>> {
+    return api.post<Property>(`${API_CONFIG.VERSION}/property`, propertyData);
     // Mock implementation
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const newProperty: Property = {
-          id: String(mockProperties.length + 1),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          status: 'active',
-          ...propertyData
-        };
-        mockProperties.push(newProperty);
-        resolve({ success: true, data: newProperty });
-      }, 500);
-    });
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     const newProperty: Property = {
+    //       id: String(mockProperties.length + 1),
+    //       created_at: new Date().toISOString(),
+    //       updated_at: new Date().toISOString(),
+    //       status: 'active',
+    //       ...propertyData
+    //     };
+    //     mockProperties.push(newProperty);
+    //     resolve({ success: true, data: newProperty });
+    //   }, 500);
+    // });
   },
 
 

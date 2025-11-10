@@ -12,13 +12,17 @@ export default function Properties() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   
   // Use the custom API hook for properties
-  const { data: response, loading, error, execute: fetchProperties } = useApi(() => propertyService.getProperties(1, 10));
+const [page] = useState(1);
+const [limit] = useState(10);
 
+const { data: response, loading, error, execute: fetchProperties } = useApi(
+  () => propertyService.getProperties(page, limit)
+);
   // Extract properties from the API response
-  const properties = response?.data || [];
+  const properties = response?.data?.data ?? || [];
 
   // Handle delete property
-  const handleDeleteProperty = async (propertyId: string) => {
+  const handleDeleteProperty = async () => {
     if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
       try {
         setDeleteLoading(true);
