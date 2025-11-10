@@ -111,20 +111,6 @@ export const propertyService = {
    */
   async createProperty(propertyData: CreatePropertyRequest): Promise<ApiResponse<Property>> {
     return api.post<Property>(`${API_CONFIG.VERSION}/property`, propertyData);
-    // Mock implementation
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     const newProperty: Property = {
-    //       id: String(mockProperties.length + 1),
-    //       created_at: new Date().toISOString(),
-    //       updated_at: new Date().toISOString(),
-    //       status: 'active',
-    //       ...propertyData
-    //     };
-    //     mockProperties.push(newProperty);
-    //     resolve({ success: true, data: newProperty });
-    //   }, 500);
-    // });
   },
 
 
