@@ -106,6 +106,27 @@ export default function PropertiesTable({ properties, loading, onDelete }: Prope
                 {formatDate(property.updated_at)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <button
+                  onClick={() => navigator.clipboard.writeText(property.ical_feed_url)}
+                  className="text-blue-600 hover:text-blue-900 hover:bg-blue-50 px-2 py-1 rounded transition-colors duration-200"
+                  title="Copy iCal URL"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2M16 8h2a2 2 0 012 2v8a2 2 0 01-2 2h-8a2 2 0 01-2-2v-2"
+                    />
+                  </svg>
+                </button>
+
                 <button
                   onClick={() => onDelete?.(property.id)}
                   className="text-red-600 hover:text-red-900 hover:bg-red-50 px-2 py-1 rounded transition-colors duration-200"
