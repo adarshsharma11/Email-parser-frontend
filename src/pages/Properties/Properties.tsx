@@ -5,6 +5,7 @@ import ComponentCard from "../../components/common/ComponentCard";
 import PageMeta from "../../components/common/PageMeta";
 import PropertiesTable from "../../components/tables/PropertiesTable";
 import { propertyService } from "../../services";
+import type { PropertyApiResponse } from "../../services";
 import { useApi } from "../../hooks";
 
 export default function Properties() {
@@ -15,34 +16,33 @@ export default function Properties() {
 const [page] = useState(1);
 const [limit] = useState(10);
 
-const { data: response, loading, error, execute: fetchProperties } = useApi(
+const { data: response, loading, error, execute: fetchProperties } = useApi<PropertyApiResponse>(
   () => propertyService.getProperties(page, limit)
 );
-  // Extract properties from the API response
-  const properties = response?.data?.data ?? || [];
+  // Extract properties array from the API response shape
+  const properties = response?.data ?? [];
 
   // Handle delete property
-  const handleDeleteProperty = async () => {
-    if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
-      try {
-        setDeleteLoading(true);
-        const result = {
-          success: true,
-        }
-        
-        if (result.success) {
-          // Refresh the property list after successful deletion
-          await fetchProperties();
-          alert('Property deleted successfully!');
-        } else {
-          alert('Failed to delete property. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error deleting property:', error);
-        alert('An error occurred while deleting the property.');
-      } finally {
-        setDeleteLoading(false);
+  const handleDeleteProperty = async (propertyId: string) => {
+    if (!propertyId) return;
+    const confirmed = confirm('Are you sure you want to delete this property? This action cannot be undone.');
+    if (!confirmed) return;
+
+    try {
+      setDeleteLoading(true);
+      const result = await propertyService.deleteProperty(propertyId);
+
+      if (result.success) {
+        await fetchProperties();
+        alert('Property deleted successfully!');
+      } else {
+        alert('Failed to delete property. Please try again.');
       }
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      alert('An error occurred while deleting the property.');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
