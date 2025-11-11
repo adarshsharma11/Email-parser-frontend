@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
 import PageMeta from "../../components/common/PageMeta";
@@ -12,7 +11,7 @@ import { Modal } from "../../components/ui/modal";
 import Alert from "../../components/ui/alert/Alert";
 
 export default function Properties() {
-  const navigate = useNavigate();
+  
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
   const [createLoading, setCreateLoading] = useState(false);
