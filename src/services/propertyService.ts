@@ -69,27 +69,49 @@ export const propertyService = {
    * Get all properties with pagination
    */
   async getProperties(page: number = 1, limit: number = 10): Promise<ApiResponse<PropertyApiResponse>> {
-
-     const response = await api.get<any>(
+    const response = await api.get<any>(
       `${API_CONFIG.VERSION}/property?page=${page}&limit=${limit}`
     );
-     const dataArray = Array.isArray(response.data?.data)
-      ? response.data?.data
-      : [];
-    // Mock implementation - replace with actual API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          data: {
-            data: dataArray,
-            total: response.data.total,
-            page,
-            limit
-          }
-        });
-      }, 500);
-    });
+
+    if (!response.success) {
+      return {
+        success: false,
+        data: { data: [], total: 0, page, limit },
+        error: response.error,
+      };
+    }
+
+    const backend = response.data;
+    const envelope = backend?.data;
+    let dataArray: Property[] = [];
+    let total = 0;
+
+    if (Array.isArray(envelope?.data)) {
+      dataArray = envelope.data;
+      total = typeof envelope.total === 'number' ? envelope.total : envelope.data.length;
+    } else if (Array.isArray(backend?.data)) {
+      dataArray = backend.data;
+      total = backend.data.length;
+    } else if (Array.isArray(backend)) {
+      dataArray = backend;
+      total = backend.length;
+    }
+
+    // Normalize IDs to strings to keep UI and delete endpoint consistent
+    const normalized = dataArray.map((p: any) => ({
+      ...p,
+      id: String(p.id),
+    }));
+
+    return {
+      success: true,
+      data: {
+        data: normalized as Property[],
+        total,
+        page,
+        limit,
+      },
+    };
   },
 
 
@@ -111,6 +133,13 @@ export const propertyService = {
    */
   async createProperty(propertyData: CreatePropertyRequest): Promise<ApiResponse<Property>> {
     return api.post<Property>(`${API_CONFIG.VERSION}/property`, propertyData);
+  },
+
+  /**
+   * Delete property by id
+   */
+  async deleteProperty(id: string): Promise<ApiResponse<void>> {
+    return api.delete<void>(`${API_CONFIG.VERSION}/property/${id}`);
   },
 
 
