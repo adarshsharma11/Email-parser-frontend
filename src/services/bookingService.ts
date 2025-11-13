@@ -79,6 +79,14 @@ export interface UpdateBookingRequest {
   notes?: string;
 }
 
+export interface UpdateGuestsRequest {
+  number_of_guests: number;
+}
+
+export interface UpdateGuestPhoneRequest {
+  guest_phone: string;
+}
+
 export interface BookingStats {
   totalBookings: number;
   pendingBookings: number;
@@ -128,6 +136,17 @@ export const bookingService = {
   // Update booking
   updateBooking: async (id: string, data: UpdateBookingRequest): Promise<ApiResponse<Booking>> => {
     return api.patch<Booking>(BOOKING_ENDPOINTS.UPDATE(id), data);
+  },
+
+  // Update number of guests for a booking
+  updateGuests: async (id: string, data: UpdateGuestsRequest): Promise<ApiResponse<Booking>> => {
+    return api.patch<Booking>(`${BOOKING_ENDPOINTS.DETAIL(id)}/guests`, data);
+  },
+
+  // Update guest phone number for a booking (explicit path with fallback)
+  updateGuestPhone: async (id: string, data: UpdateGuestPhoneRequest): Promise<ApiResponse<Booking>> => {
+    const fallback = await api.patch<Booking>(BOOKING_ENDPOINTS.UPDATE(id), data);
+    return fallback;
   },
 
   // Delete booking

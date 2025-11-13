@@ -8,9 +8,10 @@ import Badge from "../ui/badge/Badge";
 interface BookingTableProps {
   bookings: Booking[];
   loading?: boolean;
+  onAddGuest?: (booking: Booking) => void;
 }
 
-export default function BookingTable({ bookings, loading = false }: BookingTableProps) {
+export default function BookingTable({ bookings, loading = false, onAddGuest }: BookingTableProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -86,6 +87,9 @@ export default function BookingTable({ bookings, loading = false }: BookingTable
               Total Amount
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Guest Detail
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               Email ID
             </th>
           </tr>
@@ -121,6 +125,14 @@ export default function BookingTable({ bookings, loading = false }: BookingTable
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                 {formatCurrency(booking.total_amount, booking.currency)}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <button
+                  onClick={() => onAddGuest?.(booking)}
+                  className="text-indigo-600 hover:text-indigo-900 hover:bg-indigo-50 px-2 py-1 rounded transition-colors duration-200"
+                >
+                  Edit Guest
+                </button>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                 {booking.email_id}
