@@ -38,6 +38,8 @@ export default function Properties() {
     closeModal: closeAddModal,
   } = useModal(false);
 
+  // (Guest Detail modal removed)
+
   // Add Property form state
   const [addErrors, setAddErrors] = useState<Record<string, string>>({});
   const [addForm, setAddForm] = useState<CreatePropertyRequest>({
@@ -165,7 +167,7 @@ const { data: response, loading, error, execute: fetchProperties } = useApi<Prop
           <PropertiesTable 
             properties={properties} 
             loading={loading || deleteLoading || createLoading} 
-            onDelete={handleDeleteProperty} 
+            onDelete={handleDeleteProperty}
           />
 
           {/* Delete Confirmation Modal */}
@@ -407,6 +409,8 @@ const { data: response, loading, error, execute: fetchProperties } = useApi<Prop
               </form>
             </div>
           </Modal>
+
+          {/* Guest Detail Modal removed from Properties page */}
         </ComponentCard>
       </div>
     </>
