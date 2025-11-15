@@ -11,7 +11,7 @@ export default function Users() {
   const { loading: upsertLoading, error: upsertError, execute: upsert } = useApi((payload: { email: string; password: string }) => userService.upsertUser(payload));
   const { loading: updateLoading, error: updateError, execute: updatePassword } = useApi((params: { email: string; password: string }) => userService.updatePassword(params.email, { password: params.password }));
   const { loading: deleteLoading, error: deleteError, execute: deleteUser } = useApi((emailParam: string) => userService.deleteUser(emailParam));
-  const { loading: connectLoading, error: connectError, execute: connectUser } = useApi((emailParam: string) => userService.connectUser(emailParam));
+  const { execute: connectUser } = useApi((emailParam: string) => userService.connectUser(emailParam));
 
   const [users, setUsers] = useState<User[]>([]);
   const [email, setEmail] = useState('');
