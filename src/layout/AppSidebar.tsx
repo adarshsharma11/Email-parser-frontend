@@ -26,10 +26,15 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
-   {
+  {
     icon: <TimeIcon />,
     name: "Bookings",
     path: "/bookings",
+  },
+  {
+    icon: <TimeIcon />,
+    name: "Users",
+    path: "/users",
   },
    {
     icon: <TimeIcon />,

@@ -31,6 +31,9 @@ export const BOOKING_ENDPOINTS = {
 export const USER_ENDPOINTS = {
   LIST: buildEndpoint('/users'),
   DETAIL: (id: string) => buildEndpoint(`/users/${id}`),
+  UPSERT: buildEndpoint('/users'),
+  UPDATE_PASSWORD: (email: string) => buildEndpoint(`/users/${encodeURIComponent(email)}`),
+  CONNECT: (email: string) => buildEndpoint(`/users/${encodeURIComponent(email)}/connect`),
   PROFILE: buildEndpoint('/users/profile'),
 } as const;
 
