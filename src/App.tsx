@@ -15,6 +15,7 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import Users from "./pages/Users/Users";
 
 import { AppProvider } from "./context/AppContext";
 
@@ -36,6 +37,7 @@ export default function App() {
             {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />
             <Route path="/bookings" element={<Bookings />} />
+            <Route path="/users" element={<Users />} />
             <Route path="/crews" element={<Crews />} />
             <Route path="/crews/add" element={<AddCrew />} />
             <Route path="/properties" element={<Properties />} />
