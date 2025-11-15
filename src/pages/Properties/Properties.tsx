@@ -67,6 +67,27 @@ const { data: response, loading, error, execute: fetchProperties } = useApi<Prop
     openDeleteModal();
   };
 
+  // Handle copy iCal URL success
+  const handleCopyIcalUrl = async (icalUrl: string, propertyName: string) => {
+    try {
+      await navigator.clipboard.writeText(icalUrl);
+      setAlertState({
+        variant: "success",
+        title: "iCal URL Copied!",
+        message: `iCal URL for ${propertyName} has been copied to clipboard.`,
+        visible: true,
+      });
+    } catch (error) {
+      console.error('Failed to copy iCal URL:', error);
+      setAlertState({
+        variant: "error",
+        title: "Copy Failed",
+        message: "Failed to copy iCal URL. Please try again.",
+        visible: true,
+      });
+    }
+  };
+
   // Confirm deletion after modal approval
   const confirmDelete = async () => {
     if (!selectedPropertyId) return;
@@ -168,6 +189,7 @@ const { data: response, loading, error, execute: fetchProperties } = useApi<Prop
             properties={properties} 
             loading={loading || deleteLoading || createLoading} 
             onDelete={handleDeleteProperty}
+            onCopyIcalUrl={handleCopyIcalUrl}
           />
 
           {/* Delete Confirmation Modal */}

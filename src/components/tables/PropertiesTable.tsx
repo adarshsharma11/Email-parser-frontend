@@ -4,9 +4,10 @@ interface PropertiesTableProps {
   properties: Property[] | undefined;
   loading?: boolean;
   onDelete?: (propertyId: string) => void;
+  onCopyIcalUrl?: (icalUrl: string, propertyName: string) => void;
 }
 
-export default function PropertiesTable({ properties, loading, onDelete }: PropertiesTableProps) {
+export default function PropertiesTable({ properties, loading, onDelete, onCopyIcalUrl }: PropertiesTableProps) {
   // Format date helper function
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -107,7 +108,7 @@ export default function PropertiesTable({ properties, loading, onDelete }: Prope
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <button
-                  onClick={() => navigator.clipboard.writeText(property.ical_feed_url)}
+                  onClick={() => onCopyIcalUrl?.(property.ical_feed_url, property.name)}
                   className="text-blue-600 hover:text-blue-900 hover:bg-blue-50 px-2 py-1 rounded transition-colors duration-200"
                   title="Copy iCal URL"
                 >
