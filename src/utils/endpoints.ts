@@ -37,6 +37,12 @@ export const USER_ENDPOINTS = {
   PROFILE: buildEndpoint('/users/profile'),
 } as const;
 
+// Dashboard Endpoints
+export const DASHBOARD_ENDPOINTS = {
+  METRICS: buildEndpoint('/dashboard'),
+  BY_PLATFORM: (platform: string) => `${buildEndpoint('/dashboard')}?platform=${encodeURIComponent(platform)}`,
+} as const;
+
 // Email Endpoints
 export const EMAIL_ENDPOINTS = {
   LIST: buildEndpoint('/emails'),

@@ -5,7 +5,7 @@
 
 // API Configuration
 export const API_CONFIG = {
-  URL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001',
+  URL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000',
   KEY: import.meta.env.VITE_API_KEY || '',
   VERSION: '/api/v1',
 } as const;
