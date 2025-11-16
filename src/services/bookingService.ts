@@ -4,7 +4,7 @@
  */
 
 import { api, ApiResponse } from '../utils/api';
-import { BOOKING_ENDPOINTS, ENDPOINT_PATTERNS } from '../utils/endpoints';
+import { BOOKING_ENDPOINTS, ENDPOINT_PATTERNS, DASHBOARD_ENDPOINTS } from '../utils/endpoints';
 
 // Types
 export interface Booking {
@@ -115,6 +115,17 @@ export interface ReservationMapResponse {
   data: Record<string, string>; 
 }
 
+export interface DashboardMetricsResponse {
+  success: boolean;
+  message: string;
+  timestamp: string;
+  data: {
+    total_bookings: number;
+    unique_customers: number;
+    monthly_sales: { month: string; total_amount: number }[];
+  };
+}
+
 // Booking Service
 export const bookingService = {
   // Get all bookings with pagination
@@ -198,6 +209,10 @@ export const bookingService = {
    // Property
   propertyBooking: async (platform: string): Promise<ApiResponse<ReservationMapResponse>> => {
         return api.get<ReservationMapResponse>(BOOKING_ENDPOINTS.PROPERTY(platform));
+  },
+
+  getDashboardMetrics: async (platform: string): Promise<ApiResponse<DashboardMetricsResponse>> => {
+    return api.get<DashboardMetricsResponse>(DASHBOARD_ENDPOINTS.BY_PLATFORM(platform));
   },
 };
 
