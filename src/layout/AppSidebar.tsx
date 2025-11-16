@@ -9,7 +9,10 @@ import {
   HorizontaLDots,
   PlugInIcon,
   UserCircleIcon,
-  TimeIcon
+  GroupIcon,
+  ListIcon,
+  TableIcon,
+  BoxIcon
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 
@@ -24,20 +27,20 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    path: "/",
   },
   {
-    icon: <TimeIcon />,
+    icon: <TableIcon />,
     name: "Bookings",
     path: "/bookings",
   },
   {
-    icon: <TimeIcon />,
+    icon: <GroupIcon />,
     name: "Users",
     path: "/users",
   },
    {
-    icon: <TimeIcon />,
+    icon: <ListIcon />,
     name: "Crews",
     subItems: [
       { name: "View Crews", path: "/crews", pro: false },
@@ -45,7 +48,7 @@ const navItems: NavItem[] = [
     ],
   },
    {
-    icon: <TimeIcon />,
+    icon: <BoxIcon />,
     name: "Properties",
     subItems: [
       { name: "View Properties", path: "/properties", pro: false },
