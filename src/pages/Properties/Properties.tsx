@@ -112,7 +112,6 @@ const { data: response, loading, error, execute: fetchProperties } = useApi<Prop
         });
       }
     } catch (error) {
-      console.error('Error deleting property:', error);
       setAlertState({
         variant: "error",
         title: "Unexpected error",
@@ -128,9 +127,7 @@ const { data: response, loading, error, execute: fetchProperties } = useApi<Prop
 
   // Fetch property data on component mount
   useEffect(() => {
-    fetchProperties().catch((error) => {
-      console.error('Failed to fetch properties:', error);
-    });
+    fetchProperties().catch(() => {});
   }, []);
 
   // Auto-dismiss alerts after a short delay
@@ -268,7 +265,6 @@ const { data: response, loading, error, execute: fetchProperties } = useApi<Prop
                       });
                     }
                   } catch (err) {
-                    console.error('Error creating property:', err);
                     setAlertState({
                       variant: 'error',
                       title: 'Unexpected error',

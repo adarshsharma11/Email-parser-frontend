@@ -42,25 +42,8 @@ export default function Crews() {
 
   // Fetch crew data on component mount
   useEffect(() => {
-    console.log('🚀 Fetching crew data...');
-    fetchCrews().then((result) => {
-      console.log('📡 API call result:', result);
-      console.log('📡 API call success:', result?.success);
-      console.log('📡 API call data:', result?.data);
-      
-      // Force display of data structure
-      if (result?.success && result?.data) {
-        console.log('✅ SUCCESS: Data received:', result.data);
-        console.log('✅ Data type:', typeof result.data);
-        console.log('✅ Is array:', Array.isArray(result.data));
-        console.log('✅ Data length:', Array.isArray(result.data) ? result.data.length : 'N/A');
-        console.log('✅ First crew item:', Array.isArray(result.data) ? result.data[0] : 'N/A');
-      } else {
-        console.log('❌ FAILED: No data received or request failed');
-        console.log('❌ Result:', result);
-      }
-    }).catch((error) => {
-      console.error('❌ API call failed:', error);
+    fetchCrews().then(() => {
+    }).catch(() => {
     });
   }, []);
 
@@ -68,11 +51,8 @@ export default function Crews() {
   // Log loading and error states
   useEffect(() => {
     if (loading) {
-      console.log('⏳ Loading crews...');
     }
     if (error) {
-      console.error('❌ Error loading crews:', error);
-      console.error('📍 Error Details:', error.message);
     }
   }, [loading, error]);
 
