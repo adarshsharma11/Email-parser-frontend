@@ -179,6 +179,7 @@ export default function Users() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Update</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delete</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Test Connection</th>
@@ -188,6 +189,11 @@ export default function Users() {
                 {users.map((u) => (
                   <tr key={u.email} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{u.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${u.status === 'active' ? 'bg-green-100 text-green-700' : u.status === 'inactive' ? 'bg-gray-200 text-gray-700' : 'bg-gray-100 text-gray-600'}`}>
+                        {u.status ? u.status : '—'}
+                      </span>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button
                         onClick={() => openPasswordModal(u.email)}
@@ -217,7 +223,7 @@ export default function Users() {
                 ))}
                 {users.length === 0 && !listLoading && (
                   <tr>
-                    <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">No users found</td>
+                    <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">No users found</td>
                   </tr>
                 )}
               </tbody>

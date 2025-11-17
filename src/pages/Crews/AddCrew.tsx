@@ -95,26 +95,23 @@ export default function AddCrew() {
     e.preventDefault();
 
     if (!validateForm()) {
-      console.log('❌ Form validation failed');
       return;
     }
 
     try {
-      console.log('🚀 Submitting crew data:', formData);
       const result = await createCrew(formData);
       
       if (result?.success) {
-        console.log('✅ Crew created successfully:', result.data);
         setShowSuccess(true);
         // Navigate back to crews list after showing success message
         setTimeout(() => {
           navigate('/crews');
         }, 2000);
       } else {
-        console.error('❌ Failed to create crew:', result?.error);
+        
       }
     } catch (error) {
-      console.error('❌ Error creating crew:', error);
+      
     }
   };
 

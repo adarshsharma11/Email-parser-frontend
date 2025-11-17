@@ -5,6 +5,7 @@ export interface User {
   email: string;
   created_at?: string;
   updated_at?: string;
+  status?: 'active' | 'inactive' | string;
 }
 
 export interface UpsertUserRequest {

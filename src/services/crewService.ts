@@ -72,7 +72,6 @@ export const crewService = {
       }
       // If data is an object with other structure, try to find the array
       else {
-        console.warn('Unexpected API response structure:', response.data);
         return response;
       }
     }
