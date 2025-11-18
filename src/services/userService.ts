@@ -17,6 +17,10 @@ export interface UpdatePasswordRequest {
   password: string;
 }
 
+export interface UpdateStatusRequest {
+  status: 'active' | 'inactive';
+}
+
 export interface UsersApiResponse {
   data: User[];
   total?: number;
@@ -40,6 +44,11 @@ export const userService = {
     return api.put<User>(endpoint, payload);
   },
 
+  async updateStatus(email: string, payload: UpdateStatusRequest): Promise<ApiResponse<User>> {
+    const endpoint = `${API_CONFIG.VERSION}/users/${encodeURIComponent(email)}`;
+    return api.put<User>(endpoint, payload);
+  },
+
   async deleteUser(email: string): Promise<ApiResponse<void>> {
     const endpoint = `${API_CONFIG.VERSION}/users/${encodeURIComponent(email)}`;
     return api.delete<void>(endpoint);
@@ -48,6 +57,16 @@ export const userService = {
   async connectUser(email: string): Promise<ApiResponse<any>> {
     const endpoint = `${API_CONFIG.VERSION}/users/${encodeURIComponent(email)}/connect`;
     return api.post<any>(endpoint, {});
+  },
+
+  async activateUser(email: string): Promise<ApiResponse<User>> {
+    const endpoint = `${API_CONFIG.VERSION}/users/${encodeURIComponent(email)}/activate`;
+    return api.post<User>(endpoint, {});
+  },
+
+  async deactivateUser(email: string): Promise<ApiResponse<User>> {
+    const endpoint = `${API_CONFIG.VERSION}/users/${encodeURIComponent(email)}/deactivate`;
+    return api.post<User>(endpoint, {});
   },
 };
 
