@@ -12,6 +12,8 @@ export default function Users() {
   const { loading: updateLoading, error: updateError, execute: updatePassword } = useApi((params: { email: string; password: string }) => userService.updatePassword(params.email, { password: params.password }));
   const { loading: deleteLoading, error: deleteError, execute: deleteUser } = useApi((emailParam: string) => userService.deleteUser(emailParam));
   const { execute: connectUser } = useApi((emailParam: string) => userService.connectUser(emailParam));
+  
+  const { execute: deactivateUser } = useApi((emailParam: string) => userService.deactivateUser(emailParam));
 
   const [users, setUsers] = useState<User[]>([]);
   const [email, setEmail] = useState('');
@@ -27,6 +29,7 @@ export default function Users() {
   const [bannerMessage, setBannerMessage] = useState('');
   const [bannerType, setBannerType] = useState<'success' | 'error'>('success');
   const [testingMap, setTestingMap] = useState<Record<string, boolean>>({});
+  const [statusChangingMap, setStatusChangingMap] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetchUsers();
@@ -106,6 +109,23 @@ export default function Users() {
     setTimeout(() => setBannerMessage(''), 2500);
     setTestingMap(prev => ({ ...prev, [emailValue]: false }));
   };
+
+  const handleDeactivate = async (emailValue: string) => {
+    setStatusChangingMap(prev => ({ ...prev, [emailValue]: true }));
+    const res = await deactivateUser(emailValue);
+    if (res?.success) {
+      setUsers(prev => prev.map(u => (u.email === emailValue ? { ...u, status: 'inactive' } : u)));
+      setBannerType('success');
+      setBannerMessage('User deactivated');
+    } else {
+      setBannerType('error');
+      setBannerMessage('Failed to deactivate user');
+    }
+    setTimeout(() => setBannerMessage(''), 2500);
+    setStatusChangingMap(prev => ({ ...prev, [emailValue]: false }));
+  };
+
+  
 
   const renderStatus = () => {
     if (listLoading) return <div className="text-gray-500">Loading users...</div>;
@@ -190,9 +210,19 @@ export default function Users() {
                   <tr key={u.email} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{u.email}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${u.status === 'active' ? 'bg-green-100 text-green-700' : u.status === 'inactive' ? 'bg-gray-200 text-gray-700' : 'bg-gray-100 text-gray-600'}`}>
-                        {u.status ? u.status : '—'}
-                      </span>
+                      {u.status === 'inactive' ? (
+                        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-200 text-gray-700">inactive</span>
+                      ) : (
+                        <select
+                          value={'active'}
+                          onChange={handleDeactivate.bind(null, u.email)}
+                          disabled={Boolean(statusChangingMap[u.email])}
+                          className={`rounded-md border px-2 py-1 ${statusChangingMap[u.email] ? 'opacity-50 cursor-not-allowed' : 'bg-white'} border-green-300 text-green-700`}
+                        >
+                          <option value="active" disabled>active</option>
+                          <option value="inactive">inactive</option>
+                        </select>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button
