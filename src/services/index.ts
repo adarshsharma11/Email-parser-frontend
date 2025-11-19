@@ -14,5 +14,8 @@ export { default as crewService } from './crewService';
 export { default as propertyService } from './propertyService';
 export type * from './propertyService';
 
+export { default as authService } from './authService';
+export type * from './authService';
+
 export { default as userService } from './userService';
 export type * from './userService';

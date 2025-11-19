@@ -1,13 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
+import Button from "../ui/button/Button";
+import { useAuth } from "../../context/AuthContext";
 
 export default function SignUpForm() {
+  const navigate = useNavigate();
+  const { register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [loading, setLoading] = useState(false);
   return (
     <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
       <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
@@ -82,7 +90,24 @@ export default function SignUpForm() {
                 </span>
               </div>
             </div>
-            <form>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setErrorMsg("");
+                if (!email || !password) {
+                  setErrorMsg("Email and password are required");
+                  return;
+                }
+                setLoading(true);
+                const res = await register({ email, password });
+                setLoading(false);
+                if (res.success) {
+                  navigate("/");
+                } else {
+                  setErrorMsg(res.error || "Registration failed");
+                }
+              }}
+            >
               <div className="space-y-5">
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   {/* <!-- First Name --> */}
@@ -120,6 +145,8 @@ export default function SignUpForm() {
                     id="email"
                     name="email"
                     placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 {/* <!-- Password --> */}
@@ -131,6 +158,8 @@ export default function SignUpForm() {
                     <Input
                       placeholder="Enter your password"
                       type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -163,12 +192,15 @@ export default function SignUpForm() {
                   </p>
                 </div>
                 {/* <!-- Button --> */}
+                {errorMsg && (
+                  <div className="text-error-500 text-sm">{errorMsg}</div>
+                )}
                 <div>
-                  <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
-                    Sign Up
-                  </button>
+                  <Button className="w-full" size="sm" disabled={loading}>
+                    {loading ? "Signing up..." : "Sign Up"}
+                  </Button>
                 </div>
-              </div>
+            </div>
             </form>
 
             <div className="mt-5">

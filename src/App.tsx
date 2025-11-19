@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { useEffect } from "react";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -18,8 +19,12 @@ import Home from "./pages/Dashboard/Home";
 import Users from "./pages/Users/Users";
 
 import { AppProvider } from "./context/AppContext";
+import { authService } from "./services";
 
 export default function App() {
+  useEffect(() => {
+    authService.initTokenFromStorage();
+  }, []);
   return (
     <AppProvider>
       <Router>
