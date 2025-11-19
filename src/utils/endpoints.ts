@@ -56,6 +56,7 @@ export const EMAIL_ENDPOINTS = {
 // Auth Endpoints
 export const AUTH_ENDPOINTS = {
   LOGIN: buildEndpoint('/auth/login'),
+  REGISTER: buildEndpoint('/auth/register'),
   LOGOUT: buildEndpoint('/auth/logout'),
   REFRESH: buildEndpoint('/auth/refresh'),
   FORGOT_PASSWORD: buildEndpoint('/auth/forgot-password'),
