@@ -4,10 +4,7 @@ import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
-import LineChart from "./pages/Charts/LineChart";
-import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
-import BasicTables from "./pages/Tables/BasicTables";
 import Bookings from "./pages/Bookings/Bookings";
 import Crews from "./pages/Crews/Crews";
 import AddCrew from "./pages/Crews/AddCrew";
@@ -48,20 +45,12 @@ export default function App() {
             <Route path="/blank" element={<Blank />} />
 
             {/* Tables */}
-            <Route path="/basic-tables" element={<BasicTables />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/users" element={<Users />} />
             <Route path="/crews" element={<Crews />} />
             <Route path="/crews/add" element={<AddCrew />} />
             <Route path="/properties" element={<Properties />} />
-            <Route path="/properties/add" element={<AddProperty />} />
-
-            {/* Ui Elements */}
-           
-
-            {/* Charts */}
-            <Route path="/line-chart" element={<LineChart />} />
-            <Route path="/bar-chart" element={<BarChart />} />
+            <Route path="/properties/add" element={<AddProperty />} />           
           </Route>
 
           {/* Auth Layout */}
