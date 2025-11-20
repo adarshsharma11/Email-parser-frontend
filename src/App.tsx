@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
-import { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
+import { useEffect, type ReactNode } from "react";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -20,18 +20,26 @@ import Users from "./pages/Users/Users";
 
 import { AppProvider } from "./context/AppContext";
 import { authService } from "./services";
+import { useAuth } from "./context/AuthContext";
 
 export default function App() {
   useEffect(() => {
     authService.initTokenFromStorage();
   }, []);
+  const RequireAuth = ({ children }: { children: ReactNode }) => {
+    const { user } = useAuth();
+    if (!user.token) {
+      return <Navigate to="/signin" replace />;
+    }
+    return <>{children}</>;
+  };
   return (
     <AppProvider>
       <Router>
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
-          <Route element={<AppLayout />}>
+          <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
             <Route index path="/" element={<Home />} />
 
             {/* Others Page */}

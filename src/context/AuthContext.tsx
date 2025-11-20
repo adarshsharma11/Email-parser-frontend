@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { authService, type AuthPayload, type AuthResponse } from "../services/authService";
+import { authService, type LoginPayload, type RegisterPayload, type AuthResponse } from "../services/authService";
 import { apiClient } from "../utils/api";
 
 interface AuthState {
@@ -9,8 +9,8 @@ interface AuthState {
 
 interface AuthContextType {
   user: AuthState;
-  login: (payload: AuthPayload) => Promise<{ success: boolean; error?: string } & Partial<AuthResponse>>;
-  register: (payload: AuthPayload) => Promise<{ success: boolean; error?: string } & Partial<AuthResponse>>;
+  login: (payload: LoginPayload) => Promise<{ success: boolean; error?: string } & Partial<AuthResponse>>;
+  register: (payload: RegisterPayload) => Promise<{ success: boolean; error?: string } & Partial<AuthResponse>>;
   logout: () => void;
 }
 
@@ -42,9 +42,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login: AuthContextType["login"] = async (payload) => {
     const res = await authService.login(payload);
-    if (res.success && res.data?.token) {
-      const token = res.data.token;
-      const email = res.data.email;
+    if (res.success) {
+      const anyData: any = res.data as any;
+      const token = anyData?.token ?? anyData?.data?.token;
+      const email = anyData?.email ?? anyData?.data?.email;
       try {
         localStorage.setItem(STORAGE_KEYS.TOKEN, token);
         localStorage.setItem(STORAGE_KEYS.EMAIL, email);
@@ -60,9 +61,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register: AuthContextType["register"] = async (payload) => {
     const res = await authService.register(payload);
-    if (res.success && res.data?.token) {
-      const token = res.data.token;
-      const email = res.data.email;
+    if (res.success) {
+      const anyData: any = res.data as any;
+      const token = anyData?.token ?? anyData?.data?.token;
+      const email = anyData?.email ?? anyData?.data?.email;
       try {
         localStorage.setItem(STORAGE_KEYS.TOKEN, token);
         localStorage.setItem(STORAGE_KEYS.EMAIL, email);
@@ -76,7 +78,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { success: false, error: res.error };
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch {
+      void 0;
+    }
     try {
       localStorage.removeItem(STORAGE_KEYS.TOKEN);
       localStorage.removeItem(STORAGE_KEYS.EMAIL);
