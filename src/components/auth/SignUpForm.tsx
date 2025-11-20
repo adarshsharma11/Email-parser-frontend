@@ -12,6 +12,8 @@ export default function SignUpForm() {
   const { register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -42,12 +44,12 @@ export default function SignUpForm() {
               onSubmit={async (e) => {
                 e.preventDefault();
                 setErrorMsg("");
-                if (!email || !password) {
-                  setErrorMsg("Email and password are required");
+                if (!firstName || !lastName || !email || !password) {
+                  setErrorMsg("First name, last name, email and password are required");
                   return;
                 }
                 setLoading(true);
-                const res = await register({ email, password });
+                const res = await register({ first_name: firstName, last_name: lastName, email, password });
                 setLoading(false);
                 if (res.success) {
                   navigate("/");
@@ -68,6 +70,8 @@ export default function SignUpForm() {
                       id="fname"
                       name="fname"
                       placeholder="Enter your first name"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                     />
                   </div>
                   {/* <!-- Last Name --> */}
@@ -80,6 +84,8 @@ export default function SignUpForm() {
                       id="lname"
                       name="lname"
                       placeholder="Enter your last name"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
                     />
                   </div>
                 </div>

@@ -1,7 +1,14 @@
 import { api, ApiResponse, apiClient } from '../utils/api';
 import { AUTH_ENDPOINTS } from '../utils/endpoints';
 
-export interface AuthPayload {
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface RegisterPayload {
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
 }
@@ -12,10 +19,11 @@ export interface AuthResponse {
 }
 
 export const authService = {
-  async register(payload: AuthPayload): Promise<ApiResponse<AuthResponse>> {
+  async register(payload: RegisterPayload): Promise<ApiResponse<AuthResponse>> {
     const res = await api.post<AuthResponse>(AUTH_ENDPOINTS.REGISTER, payload);
-    if (res.success && res.data?.token) {
-      const token = res.data.token;
+    if (res.success) {
+      const anyData: any = res.data as any;
+      const token = anyData?.token ?? anyData?.data?.token;
       try {
         localStorage.setItem('auth_token', token);
       } catch { void 0; }
@@ -24,15 +32,25 @@ export const authService = {
     return res;
   },
 
-  async login(payload: AuthPayload): Promise<ApiResponse<AuthResponse>> {
+  async login(payload: LoginPayload): Promise<ApiResponse<AuthResponse>> {
     const res = await api.post<AuthResponse>(AUTH_ENDPOINTS.LOGIN, payload);
-    if (res.success && res.data?.token) {
-      const token = res.data.token;
+    if (res.success) {
+      const anyData: any = res.data as any;
+      const token = anyData?.token ?? anyData?.data?.token;
       try {
         localStorage.setItem('auth_token', token);
       } catch { void 0; }
       apiClient.defaults.headers.Authorization = `Bearer ${token}`;
     }
+    return res;
+  },
+
+  async logout(): Promise<ApiResponse<{ message?: string }>> {
+    const res = await api.post<{ message?: string }>(AUTH_ENDPOINTS.LOGOUT, {});
+    try {
+      localStorage.removeItem('auth_token');
+    } catch { void 0; }
+    delete apiClient.defaults.headers.Authorization;
     return res;
   },
 

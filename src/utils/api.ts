@@ -122,10 +122,12 @@ export const apiRequest = async <T = any>(
     };
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>;
+    const respData: any = axiosError.response?.data as any;
+    const message = respData?.detail?.message || respData?.message || respData?.error || axiosError.message || 'Request failed';
     return {
       success: false,
       data: {} as T,
-      error: axiosError.response?.data?.message || axiosError.message || 'Request failed',
+      error: message,
     };
   }
 };
