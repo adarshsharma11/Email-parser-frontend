@@ -36,9 +36,18 @@ const apiClient: AxiosInstance = axios.create({
 // Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    // Add auth token if available
-    if (API_CONFIG.KEY) {
-      config.headers.Authorization = `Bearer ${API_CONFIG.KEY}`;
+    // Add auth token from localStorage if available; fallback to API key
+    try {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      } else if (API_CONFIG.KEY) {
+        config.headers.Authorization = `Bearer ${API_CONFIG.KEY}`;
+      }
+    } catch {
+      if (API_CONFIG.KEY) {
+        config.headers.Authorization = `Bearer ${API_CONFIG.KEY}`;
+      }
     }
     
     // Add any other request modifications here

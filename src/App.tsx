@@ -30,6 +30,13 @@ export default function App() {
     }
     return <>{children}</>;
   };
+  const RequireGuest = ({ children }: { children: ReactNode }) => {
+    const { user } = useAuth();
+    if (user.token) {
+      return <Navigate to="/" replace />;
+    }
+    return <>{children}</>;
+  };
   return (
     <AppProvider>
       <Router>
@@ -54,8 +61,8 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<RequireGuest><SignIn /></RequireGuest>} />
+          <Route path="/signup" element={<RequireGuest><SignUp /></RequireGuest>} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
