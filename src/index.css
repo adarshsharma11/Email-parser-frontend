@@ -3,7 +3,7 @@ layer(base);
 
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (.dark &);
 
 @theme {
   --font-*: initial;
