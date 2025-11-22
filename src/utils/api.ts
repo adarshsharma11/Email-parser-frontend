@@ -73,8 +73,19 @@ apiClient.interceptors.response.use(
       // Handle specific error codes
       switch (error.response.status) {
         case 401:
-          // Handle unauthorized access
-          console.error('Unauthorized access - redirect to login');
+          try {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_email');
+            localStorage.removeItem('auth_first_name');
+            localStorage.removeItem('auth_last_name');
+          } catch { void 0; }
+          delete apiClient.defaults.headers.Authorization;
+          if (typeof window !== 'undefined') {
+            try { window.dispatchEvent(new CustomEvent('auth:tokenChange')); } catch { void 0; }
+            if (window.location.pathname !== '/signin') {
+              window.location.replace('/signin');
+            }
+          }
           break;
         case 403:
           // Handle forbidden access
@@ -133,6 +144,21 @@ export const apiRequest = async <T = any>(
     const axiosError = error as AxiosError<ApiError>;
     const respData: any = axiosError.response?.data as any;
     const message = respData?.detail?.message || respData?.message || respData?.error || axiosError.message || 'Request failed';
+    if (axiosError.response?.status === 401) {
+      try {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_email');
+        localStorage.removeItem('auth_first_name');
+        localStorage.removeItem('auth_last_name');
+      } catch { void 0; }
+      delete apiClient.defaults.headers.Authorization;
+      if (typeof window !== 'undefined') {
+        try { window.dispatchEvent(new CustomEvent('auth:tokenChange')); } catch { void 0; }
+        if (window.location.pathname !== '/signin') {
+          window.location.replace('/signin');
+        }
+      }
+    }
     return {
       success: false,
       data: {} as T,

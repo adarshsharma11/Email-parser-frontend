@@ -16,6 +16,13 @@ export interface RegisterPayload {
 export interface AuthResponse {
   token: string;
   email: string;
+  first_name?: string;
+  last_name?: string;
+}
+
+export interface UpdateProfilePayload {
+  first_name: string;
+  last_name: string;
 }
 
 export const authService = {
@@ -51,6 +58,11 @@ export const authService = {
       localStorage.removeItem('auth_token');
     } catch { void 0; }
     delete apiClient.defaults.headers.Authorization;
+    return res;
+  },
+
+  async updateProfile(payload: UpdateProfilePayload): Promise<ApiResponse<AuthResponse>> {
+    const res = await api.put<AuthResponse>(AUTH_ENDPOINTS.PROFILE, payload);
     return res;
   },
 

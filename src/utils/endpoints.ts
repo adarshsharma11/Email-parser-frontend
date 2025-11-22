@@ -58,6 +58,7 @@ export const AUTH_ENDPOINTS = {
   LOGIN: buildEndpoint('/auth/login'),
   REGISTER: buildEndpoint('/auth/register'),
   LOGOUT: buildEndpoint('/auth/logout'),
+  PROFILE: buildEndpoint('/auth/profile'),
   REFRESH: buildEndpoint('/auth/refresh'),
   FORGOT_PASSWORD: buildEndpoint('/auth/forgot-password'),
   RESET_PASSWORD: buildEndpoint('/auth/reset-password'),
