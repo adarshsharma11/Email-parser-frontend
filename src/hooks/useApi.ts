@@ -43,6 +43,13 @@ export function useApi<T = any>(
               error: null,
             });
           } else {
+            const unauth = /401|unauthorized/i.test(String(response.error || ''));
+            if (unauth && typeof window !== 'undefined') {
+              try { window.dispatchEvent(new CustomEvent('auth:tokenChange')); } catch { void 0; }
+              if (window.location.pathname !== '/signin') {
+                window.location.href = '/signin';
+              }
+            }
             setState({
               data: null,
               loading: false,
