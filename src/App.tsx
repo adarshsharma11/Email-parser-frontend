@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import { useEffect, type ReactNode } from "react";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
+import ForgotPassword from "./pages/AuthPages/ForgotPassword";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Calendar from "./pages/Calendar";
@@ -63,6 +64,7 @@ export default function App() {
           {/* Auth Layout */}
           <Route path="/signin" element={<RequireGuest><SignIn /></RequireGuest>} />
           <Route path="/signup" element={<RequireGuest><SignUp /></RequireGuest>} />
+          <Route path="/reset-password" element={<RequireGuest><ForgotPassword /></RequireGuest>} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

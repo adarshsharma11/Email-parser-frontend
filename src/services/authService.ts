@@ -25,6 +25,10 @@ export interface UpdateProfilePayload {
   last_name: string;
 }
 
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
 export const authService = {
   async register(payload: RegisterPayload): Promise<ApiResponse<AuthResponse>> {
     const res = await api.post<AuthResponse>(AUTH_ENDPOINTS.REGISTER, payload);
@@ -73,6 +77,10 @@ export const authService = {
         apiClient.defaults.headers.Authorization = `Bearer ${token}`;
       }
     } catch { void 0; }
+  },
+
+  async forgotPassword(email: string): Promise<ApiResponse<{ message?: string }>> {
+    return api.post<{ message?: string }>(AUTH_ENDPOINTS.FORGOT_PASSWORD, { email });
   },
 };
 
