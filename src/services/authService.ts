@@ -25,6 +25,11 @@ export interface UpdateProfilePayload {
   last_name: string;
 }
 
+export interface ResetPasswordPayload {
+  token: string;
+  new_password: string;
+}
+
 export interface ForgotPasswordPayload {
   email: string;
 }
@@ -67,6 +72,11 @@ export const authService = {
 
   async updateProfile(payload: UpdateProfilePayload): Promise<ApiResponse<AuthResponse>> {
     const res = await api.put<AuthResponse>(AUTH_ENDPOINTS.PROFILE, payload);
+    return res;
+  },
+
+  async resetPassword(payload: ResetPasswordPayload): Promise<ApiResponse<{ message?: string }>> {
+    const res = await api.post<{ message?: string }>(AUTH_ENDPOINTS.RESET_PASSWORD, payload);
     return res;
   },
 

@@ -14,6 +14,8 @@ interface AuthContextType {
   login: (payload: LoginPayload) => Promise<{ success: boolean; error?: string } & Partial<AuthResponse>>;
   register: (payload: RegisterPayload) => Promise<{ success: boolean; error?: string } & Partial<AuthResponse>>;
   updateProfile: (payload: { first_name: string; last_name: string }) => Promise<{ success: boolean; error?: string } & Partial<AuthResponse>>;
+  resetPassword: (payload: { token: string; new_password: string }) => Promise<{ success: boolean; error?: string; message?: string }>;
+  forgotPassword: (email: string) => Promise<{ success: boolean; error?: string; message?: string }>;
   logout: () => void;
 }
 
@@ -130,6 +132,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { success: false, error: res.error };
   };
 
+  const resetPassword: AuthContextType["resetPassword"] = async (payload) => {
+    const res = await authService.resetPassword(payload);
+    if (res.success) {
+      return { success: true, message: res.message };
+    }
+    return { success: false, error: res.error };
+  };
+
+  const forgotPassword: AuthContextType["forgotPassword"] = async (email) => {
+    const res = await authService.forgotPassword(email);
+    if (res.success) {
+      return { success: true, message: res.message };
+    }
+    return { success: false, error: res.error };
+  };
+
   const logout = async () => {
     try {
       await authService.logout();
@@ -149,7 +167,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, updateProfile, logout }}>
+    <AuthContext.Provider value={{ user, login, register, updateProfile, resetPassword, forgotPassword, logout }}>
       {children}
     </AuthContext.Provider>
   );
