@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import { useEffect, type ReactNode } from "react";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
+import ResetPassword from "./pages/AuthPages/ResetPassword";
 import ForgotPassword from "./pages/AuthPages/ForgotPassword";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
@@ -64,7 +65,8 @@ export default function App() {
           {/* Auth Layout */}
           <Route path="/signin" element={<RequireGuest><SignIn /></RequireGuest>} />
           <Route path="/signup" element={<RequireGuest><SignUp /></RequireGuest>} />
-          <Route path="/reset-password" element={<RequireGuest><ForgotPassword /></RequireGuest>} />
+          <Route path="/reset-password" element={<RequireGuest><ResetPassword /></RequireGuest>} />
+          <Route path="/forgot-password" element={<RequireGuest><ForgotPassword /></RequireGuest>} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
